@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>性压抑心理倾向自我觉察测试</title>
+<style>
+:root {
+  --bg-deep: #0d0d1a;
+  --bg-card: rgba(18, 18, 36, 0.82);
+  --bg-card-hover: rgba(22, 22, 42, 0.9);
+  --text-primary: #e6e6f0;
+  --text-secondary: #9a9ab8;
+  --text-muted: #6a6a88;
+  --accent: #b388eb;
+  --accent-light: #c9a8f5;
+  --accent-soft: #7c5cbf;
+  --accent-glow: rgba(179, 136, 235, 0.2);
+  --warn: #e07080;
+  --warn-soft: rgba(224, 112, 128, 0.15);
+  --ok: #7ec8a0;
+  --ok-soft: rgba(126, 200, 160, 0.12);
+  --amber: #e0b870;
+  --amber-soft: rgba(224, 184, 112, 0.12);
+  --border: rgba(255, 255, 255, 0.06);
+  --border-light: rgba(255, 255, 255, 0.1);
+  --radius: 20px;
+  --radius-sm: 12px;
+  --transition: 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 24px 16px 48px;
+  line-height: 1.68;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ---- Animated Background ---- */
+.bg-layer {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+}
+.bg-orb {
+  position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5;
+  animation: orbFloat 18s ease-in-out infinite;
+}
+.bg-orb-1 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(124, 92, 191, 0.18) 0%, transparent 70%);
+  top: -10%; left: -15%;
+  animation-delay: 0s;
+}
+.bg-orb-2 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(179, 136, 235, 0.13) 0%, transparent 70%);
+  top: 40%; right: -20%;
+  animation-delay: -6s;
+}
+.bg-orb-3 {
+  width: 350px; height: 350px;
+  background: radial-gradient(circle, rgba(100, 80, 160, 0.11) 0%, transparent 70%);
+  bottom: -15%; left: 30%;
+  animation-delay: -12s;
+}
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(40px, -30px) scale(1.08); }
+  50% { transform: translate(-20px, 20px) scale(0.95); }
+  75% { transform: translate(-30px, -10px) scale(1.05); }
+}
+
+.bg-noise {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+}
+
+/* ---- View ---- */
+.view { display: none; width: 100%; max-width: 620px; z-index: 1; position: relative; }
+.view.active { display: block; animation: fadeInUp 0.5s ease; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes slideRight {
+  from { width: 0%; }
+}
+
+/* ---- Card ---- */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 30px 26px;
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  margin-bottom: 18px;
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25), 0 1px 0 rgba(255, 255, 255, 0.03) inset;
+  transition: box-shadow var(--transition), border-color var(--transition);
+}
+.card:hover {
+  border-color: var(--border-light);
+}
+
+/* ---- Buttons ---- */
+.btn-primary, .btn-secondary {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 15px 34px; border: none; border-radius: 14px;
+  font-size: 16px; font-weight: 600; cursor: pointer;
+  transition: all var(--transition); min-width: 130px;
+  font-family: inherit; letter-spacing: 0.02em; position: relative; overflow: hidden;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent-soft), #8b6bd4, var(--accent-soft));
+  background-size: 200% 100%; color: #fff;
+  box-shadow: 0 4px 24px var(--accent-glow);
+}
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 36px rgba(179, 136, 235, 0.3);
+  background-position: 100% 0;
+}
+.btn-primary:active:not(:disabled) { transform: translateY(0) scale(0.98); }
+.btn-primary:disabled { opacity: 0.3; cursor: not-allowed; box-shadow: none; }
+.btn-secondary {
+  background: rgba(255,255,255,0.04); color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover:not(:disabled) {
+  background: rgba(255,255,255,0.1); border-color: var(--border-light);
+  transform: translateY(-1px);
+}
+.btn-secondary:active:not(:disabled) { transform: scale(0.98); }
+
+/* ---- Welcome ---- */
+.welcome-card { text-align: center; }
+.welcome-card h1 {
+  font-size: 30px; font-weight: 800; margin-bottom: 8px;
+  line-height: 1.35; letter-spacing: 0.04em;
+  background: linear-gradient(135deg, #efeef8 0%, #c9b8ea 50%, #a890d8 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.welcome-card .subtitle {
+  color: var(--text-secondary); margin-bottom: 26px; font-size: 15px;
+  letter-spacing: 0.04em;
+}
+.disclaimer-box {
+  background: rgba(179, 136, 235, 0.04); border-left: 3px solid var(--accent-soft);
+  border-radius: var(--radius-sm); padding: 16px 18px; margin-bottom: 18px;
+  text-align: left; font-size: 13px; color: var(--text-secondary); line-height: 1.7;
+}
+.disclaimer-box p { margin-bottom: 6px; }
+.disclaimer-box p:last-child { margin-bottom: 0; }
+.disclaimer-box strong { color: var(--accent-light); }
+.test-info {
+  color: var(--text-secondary); font-size: 14px; margin-bottom: 30px;
+  display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;
+}
+.test-info span {
+  white-space: nowrap; display: inline-flex; align-items: center; gap: 5px;
+}
+
+/* ---- Quiz ---- */
+.quiz-container { width: 100%; }
+.progress-wrap { margin-bottom: 20px; }
+.progress-stats { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.progress-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+.progress-fraction { font-size: 14px; color: var(--accent-light); font-weight: 600; }
+.progress-bar-wrapper {
+  width: 100%; height: 5px; background: rgba(255,255,255,0.05);
+  border-radius: 3px; overflow: hidden;
+}
+.progress-bar {
+  height: 100%; border-radius: 3px;
+  background: linear-gradient(90deg, var(--accent-soft), var(--accent), var(--accent-light));
+  background-size: 200% 100%;
+  transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 0%; box-shadow: 0 0 10px rgba(179,136,235,0.3);
+}
+
+.question-number {
+  font-size: 11px; color: var(--accent-soft); text-transform: uppercase;
+  letter-spacing: 0.12em; margin-bottom: 10px; font-weight: 600;
+}
+.question-text {
+  font-size: 17px; margin-bottom: 26px; line-height: 1.8; font-weight: 500;
+}
+
+.options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 30px; }
+.option-btn {
+  display: flex; align-items: center; gap: 15px;
+  width: 100%; padding: 15px 18px; border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); background: rgba(255,255,255,0.015);
+  color: var(--text-primary); font-size: 14px; cursor: pointer; text-align: left;
+  transition: all var(--transition); font-family: inherit;
+}
+.option-btn:hover {
+  border-color: rgba(179, 136, 235, 0.35);
+  background: rgba(179, 136, 235, 0.04);
+  transform: translateX(4px);
+}
+.option-btn:active { transform: scale(0.99); }
+.option-btn.selected {
+  border-color: var(--accent); background: rgba(179, 136, 235, 0.1);
+  box-shadow: 0 0 28px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,0.04);
+  transform: translateX(6px);
+}
+.option-btn .opt-num {
+  font-weight: 700; min-width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; background: rgba(255,255,255,0.05);
+  font-size: 13px; color: var(--text-muted); flex-shrink: 0;
+  transition: all var(--transition);
+}
+.option-btn.selected .opt-num {
+  background: var(--accent-soft); color: #fff;
+  box-shadow: 0 0 12px rgba(124, 92, 191, 0.4);
+}
+.option-btn .opt-label { flex: 1; }
+
+.quiz-nav { display: flex; gap: 12px; justify-content: space-between; }
+
+/* ---- Results ---- */
+.results-container { width: 100%; }
+.results-disclaimer { text-align: center; margin-bottom: 22px; }
+
+.result-summary-card { text-align: center; position: relative; overflow: hidden; }
+.result-summary-card::before {
+  content: ''; position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+  pointer-events: none; border-radius: 50%;
+}
+.score-circle {
+  position: relative; z-index: 1;
+  width: 130px; height: 130px; margin: 0 auto 16px;
+  border-radius: 50%;
+  background: conic-gradient(var(--accent) calc(var(--score-pct, 0) * 1%), rgba(255,255,255,0.04) 0);
+  display: flex; align-items: center; justify-content: center;
+  animation: scaleIn 0.5s ease;
+}
+.score-circle::before {
+  content: ''; position: absolute;
+  width: 106px; height: 106px; border-radius: 50%;
+  background: rgba(18, 18, 36, 0.95);
+}
+.score-inner {
+  position: relative; z-index: 1; text-align: center;
+}
+.score-value { font-size: 38px; font-weight: 800; color: var(--accent-light); line-height: 1; }
+.score-unit { font-size: 14px; color: var(--text-secondary); display: block; margin-top: 2px; }
+
+.result-type {
+  font-size: 24px; font-weight: 700; margin: 14px 0 8px;
+  position: relative; z-index: 1;
+}
+.result-desc {
+  font-size: 14.5px; color: var(--text-secondary); line-height: 1.75;
+  margin-bottom: 6px; position: relative; z-index: 1;
+}
+.result-strength, .result-risk, .result-advice {
+  font-size: 13.5px; line-height: 1.7; position: relative; z-index: 1;
+  margin-top: 10px; padding: 12px 16px; border-radius: var(--radius-sm);
+}
+.result-strength { color: var(--ok); background: var(--ok-soft); }
+.result-risk { color: var(--warn); background: var(--warn-soft); }
+.result-advice { color: var(--amber); background: var(--amber-soft); }
+
+.section-title {
+  font-size: 16px; font-weight: 700; margin-bottom: 20px;
+  color: var(--text-primary); letter-spacing: 0.03em;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-title::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(90deg, var(--border), transparent);
+}
+
+/* ---- Bar Chart ---- */
+.dim-bar { margin-bottom: 16px; }
+.dim-bar:last-child { margin-bottom: 0; }
+.dim-bar-header {
+  display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;
+  font-size: 13px;
+}
+.dim-bar-name { color: var(--text-primary); font-weight: 500; }
+.dim-bar-score { font-weight: 700; font-size: 15px; }
+.dim-bar-track {
+  width: 100%; height: 10px; background: rgba(255,255,255,0.04);
+  border-radius: 5px; overflow: hidden; position: relative;
+}
+.dim-bar-track::after {
+  content: ''; position: absolute; left: 25%; top: 0; width: 1px; height: 100%;
+  background: rgba(255,255,255,0.06);
+}
+.dim-bar-track::before {
+  content: ''; position: absolute; left: 50%; top: 0; width: 1px; height: 100%;
+  background: rgba(255,255,255,0.1);
+}
+.dim-bar-fill {
+  height: 100%; border-radius: 5px; transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  width: 0%; position: relative;
+}
+.dim-bar-fill::after {
+  content: ''; position: absolute; right: 0; top: 0; width: 3px; height: 100%;
+  background: inherit; border-radius: 3px; filter: brightness(1.5);
+}
+.dim-bar-fill.high { background: linear-gradient(90deg, #c85d6e, #e07080); }
+.dim-bar-fill.medium { background: linear-gradient(90deg, var(--accent-soft), var(--accent)); }
+.dim-bar-fill.low { background: linear-gradient(90deg, #4ea878, #7ec8a0); }
+
+.dim-level-tag {
+  display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 10px;
+  font-weight: 600; letter-spacing: 0.04em; margin-left: 6px;
+}
+.dim-level-tag.high { background: rgba(224,112,128,0.15); color: var(--warn); }
+.dim-level-tag.medium { background: rgba(179,136,235,0.15); color: var(--accent-light); }
+.dim-level-tag.low { background: rgba(126,200,160,0.15); color: var(--ok); }
+
+.reference-lines { display: flex; justify-content: space-between; margin-top: 4px; margin-bottom: 20px; }
+.ref-line { font-size: 10px; color: var(--text-muted); }
+
+/* ---- Advice ---- */
+.top-dim-section { margin-bottom: 0; }
+.top-dim-badge {
+  background: linear-gradient(135deg, rgba(224, 112, 128, 0.1), rgba(224, 112, 128, 0.05));
+  border: 1px solid rgba(224, 112, 128, 0.2);
+  border-radius: var(--radius-sm); padding: 16px 18px; font-size: 13.5px;
+  line-height: 1.75; color: var(--text-primary);
+}
+.top-dim-badge .top-dim-label { color: var(--warn); font-weight: 700; font-size: 13px; }
+
+.advice-list { display: flex; flex-direction: column; gap: 14px; }
+.advice-item {
+  padding: 16px 18px; border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.015); border: 1px solid var(--border);
+  transition: border-color var(--transition);
+}
+.advice-item:hover { border-color: var(--border-light); }
+.advice-dim { font-size: 14px; font-weight: 700; color: var(--accent-light); margin-bottom: 8px; }
+.advice-text { font-size: 13.5px; color: var(--text-secondary); line-height: 1.7; }
+
+.results-actions {
+  display: flex; gap: 14px; margin-top: 30px; justify-content: center; flex-wrap: wrap;
+}
+
+/* ---- Toast ---- */
+.toast {
+  position: fixed; bottom: 36px; left: 50%; transform: translateX(-50%);
+  background: rgba(126, 200, 160, 0.92); color: #0a0a16;
+  padding: 12px 28px; border-radius: 24px; font-size: 14px; font-weight: 700;
+  z-index: 100; pointer-events: none; letter-spacing: 0.02em;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  animation: fadeInUp 0.35s ease;
+  transition: opacity 0.35s ease;
+}
+
+/* ---- Footer ---- */
+.footer-note {
+  text-align: center; font-size: 11px; color: rgba(255,255,255,0.15);
+  margin-top: 36px; letter-spacing: 0.05em;
+}
+
+/* ---- Staggered animation for results ---- */
+.stagger-item { opacity: 0; animation: fadeInUp 0.5s ease forwards; }
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+
+/* ---- Mobile ---- */
+@media (max-width: 480px) {
+  body { padding: 16px 10px 36px; }
+  .card { padding: 24px 16px; border-radius: 16px; margin-bottom: 14px; }
+  .welcome-card h1 { font-size: 24px; }
+  .question-text { font-size: 15.5px; }
+  .option-btn { padding: 14px 14px; font-size: 13.5px; }
+  .option-btn .opt-num { min-width: 28px; height: 28px; font-size: 12px; }
+  .score-circle { width: 110px; height: 110px; }
+  .score-circle::before { width: 90px; height: 90px; }
+  .score-value { font-size: 32px; }
+  .result-type { font-size: 20px; }
+  .btn-primary, .btn-secondary { width: 100%; padding: 16px; font-size: 15px; }
+  .results-actions { flex-direction: column; }
+  .quiz-nav .btn-secondary { min-width: 70px; padding: 14px 12px; font-size: 13px; }
+  .option-btn:hover { transform: none; }
+  .option-btn.selected { transform: none; }
+}
+@media (max-width: 360px) {
+  .card { padding: 20px 14px; }
+  .welcome-card h1 { font-size: 21px; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-layer" aria-hidden="true">
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+  <div class="bg-orb bg-orb-3"></div>
+</div>
+<div class="bg-noise" aria-hidden="true"></div>
+
+<!-- ========== WELCOME VIEW ========== -->
+<div id="view-welcome" class="view active">
+  <div class="card welcome-card">
+    <h1>性压抑心理倾向<br>自我觉察测试</h1>
+    <p class="subtitle">一个温和、克制的自我反思工具</p>
+
+    <div class="disclaimer-box">
+      <p><strong>⚠️ 重要声明</strong></p>
+      <p>本测试仅供 <strong>18+ 成人</strong> 自我觉察与娱乐参考。<strong>非医学诊断工具</strong>，不构成任何医疗、心理或性健康建议。</p>
+      <p>测试完全在浏览器本地运行，<strong>不收集、不上传任何数据</strong>。</p>
+    </div>
+
+    <div class="test-info">
+      <span>6 个维度</span>
+      <span>24 道题目</span>
+      <span>约 3–5 分钟</span>
+    </div>
+
+    <button id="btn-start" class="btn-primary">开始测试</button>
+    <p id="resume-hint" class="resume-hint" style="display:none"></p>
+  </div>
+</div>
+
+<!-- ========== QUIZ VIEW ========== -->
+<div id="view-quiz" class="view">
+  <div class="quiz-container">
+    <div class="progress-wrap">
+      <div class="progress-stats">
+        <span class="progress-label">答题进度</span>
+        <span class="progress-fraction" id="progress-text">1 / 24</span>
+      </div>
+      <div class="progress-bar-wrapper">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+    </div>
+
+    <div class="card quiz-card">
+      <div class="question-number" id="question-number"></div>
+      <p class="question-text" id="question-text"></p>
+      <div class="options" id="options-container"></div>
+      <div class="quiz-nav">
+        <button id="btn-prev" class="btn-secondary">← 上一题</button>
+        <button id="btn-next" class="btn-primary" disabled>下一题 →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== RESULTS VIEW ========== -->
+<div id="view-results" class="view">
+  <div class="results-container">
+    <div class="disclaimer-box results-disclaimer stagger-item stagger-1">
+      <p><strong>⚠️ 免责声明</strong>：本结果仅供自我觉察参考，非临床诊断。如有持续困扰，建议寻求专业心理咨询师帮助。</p>
+    </div>
+
+    <div class="card result-summary-card stagger-item stagger-1">
+      <p class="total-score-label" style="font-size:14px;color:var(--text-secondary);margin-bottom:8px;">你的测试总分</p>
+      <div class="score-circle" id="score-circle">
+        <div class="score-inner">
+          <span class="score-value" id="total-score">--</span>
+          <span class="score-unit">/ 100</span>
+        </div>
+      </div>
+      <p class="result-type" id="result-type"></p>
+      <p class="result-desc" id="result-desc"></p>
+      <div id="result-strength"></div>
+      <div id="result-risk"></div>
+      <div id="result-advice"></div>
+    </div>
+
+    <div class="card dimensions-card stagger-item stagger-2">
+      <h3 class="section-title">六维度分析</h3>
+      <div class="reference-lines">
+        <span class="ref-line">0</span><span class="ref-line">25</span><span class="ref-line">50</span><span class="ref-line">75</span><span class="ref-line">100</span>
+      </div>
+      <div id="dimensions-chart"></div>
+    </div>
+
+    <div class="card advice-card stagger-item stagger-3" id="top-dim-section">
+      <h3 class="section-title">最高分维度解读</h3>
+      <div id="top-dim-content"></div>
+    </div>
+
+    <div class="card full-advice-card stagger-item stagger-4">
+      <h3 class="section-title">针对性建议</h3>
+      <div class="advice-list" id="advice-list"></div>
+    </div>
+
+    <div class="results-actions stagger-item stagger-4">
+      <button id="btn-copy" class="btn-secondary">复制结果摘要</button>
+      <button id="btn-retry" class="btn-primary">重新测试</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast" style="display:none"></div>
+<p class="footer-note">本测试完全在浏览器本地运行 · 不联网 · 不上传数据</p>
+
+<script>
+// ==================== DATA ====================
+
+var dimensions = {
+  shame:      { key: 'shame',      name: '羞耻感内化',   desc: '容易把亲密欲望或身体感受理解为羞耻/不该有' },
+  body:       { key: 'body',       name: '身体接纳度',   desc: '对身体、感官与自我形象的接纳程度' },
+  expression: { key: 'expression', name: '欲望表达困难', desc: '难以承认、表达或讨论自己的亲密需求' },
+  boundary:   { key: 'boundary',   name: '边界与沟通压力', desc: '表达拒绝、同意、舒适区时的压力程度' },
+  social:     { key: 'social',     name: '社会规训内化', desc: '外部评价、文化观念对自我感受的影响' },
+  avoidance:  { key: 'avoidance',  name: '亲密回避倾向', desc: '面对亲近关系或脆弱暴露时的回避程度' }
+};
+
+var questions = [
+  // A. 羞耻感内化 (shame)
+  { id: 1,  dim: 'shame', reverse: false, text: '当我意识到自己有亲密或身体相关的需求时，我会下意识觉得这不太"应该"。' },
+  { id: 2,  dim: 'shame', reverse: false, text: '即使只是谈论亲密关系的话题，我也可能感到紧张或不好意思。' },
+  { id: 3,  dim: 'shame', reverse: true,  text: '我能把亲密需求看作普通的人类感受，而不是道德问题。' },
+  { id: 4,  dim: 'shame', reverse: false, text: '我常担心自己对亲密的好奇或需求会显得"不纯洁"或"不体面"。' },
+  // B. 身体接纳度 (body)
+  { id: 5,  dim: 'body', reverse: false, text: '我很难自然地接纳自己的身体状态或外貌。' },
+  { id: 6,  dim: 'body', reverse: false, text: '我经常对自己的身体感到挑剔、尴尬或疏离。' },
+  { id: 7,  dim: 'body', reverse: true,  text: '我能够以温和的态度看待自己的身体，而不是总想批判它。' },
+  { id: 8,  dim: 'body', reverse: false, text: '当话题涉及身体感受时，我会本能地想避开。' },
+  // C. 欲望表达困难 (expression)
+  { id: 9,  dim: 'expression', reverse: false, text: '我很难直接说出自己在亲密关系中的真实需要。' },
+  { id: 10, dim: 'expression', reverse: false, text: '比起表达需求，我更习惯假装自己没有需求。' },
+  { id: 11, dim: 'expression', reverse: true,  text: '我可以在合适的关系里比较坦诚地讨论自己的舒适区和期待。' },
+  { id: 12, dim: 'expression', reverse: false, text: '即使对方值得信任，我也担心表达需求会让自己显得奇怪。' },
+  // D. 边界与沟通压力 (boundary)
+  { id: 13, dim: 'boundary', reverse: false, text: '当我需要说"不"或表达不舒服时，我会有很大压力。' },
+  { id: 14, dim: 'boundary', reverse: false, text: '我常常用沉默、敷衍或回避来代替直接沟通。' },
+  { id: 15, dim: 'boundary', reverse: true,  text: '我相信健康的亲密关系应该包含清楚的同意、拒绝和沟通。' },
+  { id: 16, dim: 'boundary', reverse: false, text: '我害怕表达边界后会让对方失望、尴尬或离开。' },
+  // E. 社会规训内化 (social)
+  { id: 17, dim: 'social', reverse: false, text: '我很在意别人会如何评价我的亲密观念。' },
+  { id: 18, dim: 'social', reverse: false, text: '家庭、文化或成长环境中的观念明显影响我对亲密话题的态度。' },
+  { id: 19, dim: 'social', reverse: true,  text: '我能区分"自己的真实感受"和"别人教我应该怎么想"。' },
+  { id: 20, dim: 'social', reverse: false, text: '我常用"这样是不是不对"来压住自己的真实感受。' },
+  // F. 亲密回避倾向 (avoidance)
+  { id: 21, dim: 'avoidance', reverse: false, text: '当关系变得更亲近时，我会下意识想拉开距离。' },
+  { id: 22, dim: 'avoidance', reverse: false, text: '我不太习惯让别人看到自己脆弱、需要陪伴或渴望亲近的一面。' },
+  { id: 23, dim: 'avoidance', reverse: true,  text: '在安全的关系里，我能够逐渐表达真实感受。' },
+  { id: 24, dim: 'avoidance', reverse: false, text: '我更愿意保持理性和控制感，而不是进入情感或身体层面的亲近。' }
+];
+
+var optionLabels = ['非常不同意', '比较不同意', '不确定', '比较同意', '非常同意'];
+
+// ==================== SCORING ====================
+
+function scoreAnswer(value, reverse) {
+  return reverse ? 6 - value : value;
+}
+
+function calculateResults(answers) {
+  var dimKeys = Object.keys(dimensions);
+  var dimScores = {};
+  for (var i = 0; i < dimKeys.length; i++) {
+    dimScores[dimKeys[i]] = { raw: 0, percent: 0 };
+  }
+  for (var j = 0; j < questions.length; j++) {
+    var q = questions[j];
+    var val = answers[q.id];
+    if (val != null && val >= 1 && val <= 5) {
+      dimScores[q.dim].raw += scoreAnswer(val, q.reverse);
+    }
+  }
+  for (var k = 0; k < dimKeys.length; k++) {
+    var key = dimKeys[k];
+    var pct = Math.round((dimScores[key].raw - 4) / 16 * 100);
+    dimScores[key].percent = pct < 0 ? 0 : (pct > 100 ? 100 : pct);
+  }
+  var sum = 0;
+  for (var m = 0; m < dimKeys.length; m++) {
+    sum += dimScores[dimKeys[m]].percent;
+  }
+  var totalPercent = Math.round(sum / dimKeys.length);
+  return { dimScores: dimScores, totalPercent: totalPercent };
+}
+
+var resultTypes = [
+  { min: 0, max: 24, type: '自然流动型',
+    desc: '你整体上较能把亲密、身体与表达需求看作自然的人类经验。你对自己的感受有较好的接纳度，能够在关系中保持相对放松的心态。',
+    strength: '你的优势在于能够把亲密需求看作沟通的一部分，而不是羞耻或道德负担。',
+    risk: '',
+    advice: '继续保持尊重边界、重视同意、关注双方舒适度，这些本身就是健康的亲密能力。' },
+  { min: 25, max: 44, type: '轻度保留型',
+    desc: '你可能在部分情境中感到害羞或谨慎，对某些话题保持一定的距离感，但整体上仍保有表达空间。',
+    strength: '适度的谨慎可能来自性格、成长环境或关系经验，这本身不一定是问题，反而可能让你更注重安全与分寸。',
+    risk: '',
+    advice: '可以尝试从低压力表达开始——例如写下自己的舒适区、不舒适区和希望被理解的方式。' },
+  { min: 45, max: 64, type: '矛盾拉扯型',
+    desc: '你可能经常在"想表达"和"不能表达"之间摇摆。一方面有真实的亲密需求，另一方面又被羞耻、评价或关系压力拉住。',
+    strength: '你不是矛盾的人，而是可能同时拥有真实需求和保护自己的内在机制。这种觉察本身就是重要的第一步。',
+    risk: '长期的内心拉扯可能消耗精力，有时会让你在关系中感到疲惫或不确定。',
+    advice: '练习把感受命名——例如对自己说"我有点紧张，但我想慢慢说出来"。命名感受本身就能降低它的压迫感。' },
+  { min: 65, max: 84, type: '高度压抑型',
+    desc: '你可能较常否认、隐藏或回避自己的亲密需求与身体感受，习惯用理性、回避或羞耻感压住它们。',
+    strength: '这种应对方式可能曾在你成长过程中起到保护作用，让你在面对不适时能够维持安全感。',
+    risk: '长期压抑可能会让这些感受以更隐蔽的方式影响你的关系、情绪和自我认知。',
+    advice: '不需要强迫自己突然完全开放。可以从自我接纳和边界练习的小步骤开始——比如每天记录一件关于自己身体或感受的小观察。' },
+  { min: 85, max: 100, type: '深层封闭型',
+    desc: '你可能长期把亲密、身体或需求表达与危险、羞耻、评价、失控联系在一起。表达真实感受对你来说可能是一件非常困难甚至恐惧的事。',
+    strength: '这个结果不是批判，而是提醒——你走到这里、完成这份测试本身，就已经是一种勇敢的自我关注。',
+    risk: '如果这些感受让你明显痛苦、影响日常生活或人际关系，这不是你的错，也不需要一个人扛。',
+    advice: '试着从最低风险的自我觉察开始——写日记、了解自己的身体感受、逐步建立与自己的安全关系。如果有条件，可以考虑寻求合格心理咨询师或性健康专业人士的支持。' }
+];
+
+function getResultType(totalPercent) {
+  for (var i = 0; i < resultTypes.length; i++) {
+    if (totalPercent >= resultTypes[i].min && totalPercent <= resultTypes[i].max) {
+      return resultTypes[i];
+    }
+  }
+  return resultTypes[resultTypes.length - 1];
+}
+
+var highDimAdvice = {
+  shame: '尝试把"我不该有这种感受"改写为"我正在经历一种人类常见感受"。羞耻感不等于事实，它只是你学会的一种反应。允许自己先观察这些感受，而不是立刻评判它们。',
+  body: '可以从中性观察开始，而不是强迫自己立刻喜欢身体。例如对自己说"这是我的身体，它正在陪我生活"。接纳是一个过程，不需要一步到位。',
+  expression: '先不急着对别人表达，可以写给自己看：我希望被怎样理解？哪些话我现在还说不出口？写下来本身就是一种表达练习。',
+  boundary: '边界不是拒绝亲密，而是让亲密更安全。可以练习一句简单表达："我需要慢一点"或"这个我现在不太舒服"。小表达也是大进步。',
+  social: '试着区分"我真实的感受"和"我害怕别人怎么评价"。你可以尊重自己的价值观，同时也允许自己有复杂、甚至矛盾的感受。',
+  avoidance: '回避可能曾经保护过你，但它不一定永远适合现在。可以从低风险的信任练习开始——不需要一下子完全打开，慢慢来。'
+};
+
+// ==================== STATE ====================
+
+var currentView = 'welcome';
+var currentQuestion = 0;
+var answers = {};
+
+// ==================== STORAGE ====================
+
+function loadAnswers() {
+  try {
+    var saved = localStorage.getItem('sr_test_answers');
+    if (saved) {
+      var parsed = JSON.parse(saved);
+      if (parsed && typeof parsed === 'object') answers = parsed;
+    }
+  } catch(e) { answers = {}; }
+}
+
+function saveAnswers() {
+  try {
+    localStorage.setItem('sr_test_answers', JSON.stringify(answers));
+  } catch(e) {}
+}
+
+function clearAnswers() {
+  answers = {};
+  try { localStorage.removeItem('sr_test_answers'); } catch(e) {}
+}
+
+// ==================== VIEW SWITCHING ====================
+
+function switchView(viewName) {
+  var views = document.querySelectorAll('.view');
+  for (var i = 0; i < views.length; i++) {
+    views[i].classList.remove('active');
+  }
+  var target = document.getElementById('view-' + viewName);
+  if (!target) return;
+  target.classList.add('active');
+  // Force re-trigger animation
+  target.style.animation = 'none';
+  void target.offsetHeight;
+  target.style.animation = '';
+  currentView = viewName;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ==================== TOAST ====================
+
+function showToast(msg) {
+  var toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.style.display = 'block';
+  toast.style.opacity = '1';
+  clearTimeout(toast._hideTimer);
+  toast._hideTimer = setTimeout(function() {
+    toast.style.opacity = '0';
+    setTimeout(function() { toast.style.display = 'none'; }, 350);
+  }, 2200);
+}
+
+// ==================== QUIZ ====================
+
+function renderQuestion() {
+  var q = questions[currentQuestion];
+  var dim = dimensions[q.dim];
+  document.getElementById('question-number').textContent = dim.name + ' · 第 ' + (currentQuestion + 1) + ' / 24 题';
+  document.getElementById('question-text').textContent = q.text;
+  document.getElementById('progress-text').textContent = (currentQuestion + 1) + ' / ' + questions.length;
+  document.getElementById('progress-bar').style.width = ((currentQuestion + 1) / questions.length * 100) + '%';
+
+  var optsContainer = document.getElementById('options-container');
+  optsContainer.innerHTML = '';
+  for (var v = 1; v <= 5; v++) {
+    var btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.setAttribute('aria-label', v + ' - ' + optionLabels[v - 1]);
+    btn.innerHTML = '<span class="opt-num">' + v + '</span><span class="opt-label">' + optionLabels[v - 1] + '</span>';
+    if (answers[q.id] === v) btn.classList.add('selected');
+    btn.addEventListener('click', (function(value) {
+      return function() { selectAnswer(q.id, value); };
+    })(v));
+    optsContainer.appendChild(btn);
+  }
+
+  updateNavButtons();
+}
+
+function selectAnswer(qid, value) {
+  answers[qid] = value;
+  saveAnswers();
+  var btns = document.querySelectorAll('.option-btn');
+  for (var i = 0; i < btns.length; i++) {
+    var shouldSelect = i + 1 === value;
+    if (shouldSelect) {
+      btns[i].classList.add('selected');
+    } else {
+      btns[i].classList.remove('selected');
+    }
+  }
+  updateNavButtons();
+}
+
+function updateNavButtons() {
+  var q = questions[currentQuestion];
+  var btnPrev = document.getElementById('btn-prev');
+  btnPrev.disabled = currentQuestion === 0;
+  var btnNext = document.getElementById('btn-next');
+  btnNext.disabled = answers[q.id] == null;
+  btnNext.innerHTML = currentQuestion === questions.length - 1 ? '查看结果 →' : '下一题 →';
+}
+
+function goNext() {
+  if (answers[questions[currentQuestion].id] == null) return;
+  if (currentQuestion < questions.length - 1) {
+    currentQuestion++;
+    renderQuestion();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    showResults();
+  }
+}
+
+function goPrev() {
+  if (currentQuestion > 0) {
+    currentQuestion--;
+    renderQuestion();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+// ==================== RESULTS ====================
+
+function showResults() {
+  switchView('results');
+  var results = calculateResults(answers);
+  var dimScores = results.dimScores;
+  var totalPercent = results.totalPercent;
+  var resultType = getResultType(totalPercent);
+
+  // Score circle
+  document.getElementById('total-score').textContent = totalPercent;
+  var circle = document.getElementById('score-circle');
+  circle.style.setProperty('--score-pct', totalPercent);
+  circle.style.background = 'conic-gradient(' +
+    (totalPercent >= 65 ? '#e07080' : totalPercent >= 35 ? '#b388eb' : '#7ec8a0') +
+    ' ' + totalPercent + '%, rgba(255,255,255,0.04) 0)';
+
+  document.getElementById('result-type').textContent = resultType.type;
+  document.getElementById('result-desc').textContent = resultType.desc;
+
+  var strengthEl = document.getElementById('result-strength');
+  var riskEl = document.getElementById('result-risk');
+  var adviceEl = document.getElementById('result-advice');
+
+  strengthEl.className = 'result-strength';
+  strengthEl.textContent = '✦ ' + resultType.strength;
+  strengthEl.style.display = '';
+
+  if (resultType.risk) {
+    riskEl.className = 'result-risk';
+    riskEl.textContent = '⚠ ' + resultType.risk;
+    riskEl.style.display = '';
+  } else {
+    riskEl.style.display = 'none';
+  }
+
+  adviceEl.className = 'result-advice';
+  adviceEl.textContent = '→ ' + resultType.advice;
+  adviceEl.style.display = '';
+
+  renderDimChart(dimScores);
+  renderTopDim(dimScores);
+  renderAdviceList(dimScores, resultType);
+
+  // Re-trigger stagger animations
+  var staggers = document.querySelectorAll('.stagger-item');
+  for (var s = 0; s < staggers.length; s++) {
+    var el = staggers[s];
+    el.style.animation = 'none';
+    void el.offsetHeight;
+    el.style.animation = '';
+  }
+}
+
+function getLevelTag(percent) {
+  if (percent >= 65) return '<span class="dim-level-tag high">偏高</span>';
+  if (percent >= 35) return '<span class="dim-level-tag medium">中等</span>';
+  return '<span class="dim-level-tag low">较低</span>';
+}
+
+function renderDimChart(dimScores) {
+  var container = document.getElementById('dimensions-chart');
+  container.innerHTML = '';
+  var entries = Object.entries(dimScores);
+  entries.sort(function(a, b) { return b[1].percent - a[1].percent; });
+
+  for (var i = 0; i < entries.length; i++) {
+    var key = entries[i][0];
+    var data = entries[i][1];
+    var dim = dimensions[key];
+    var level = data.percent >= 65 ? 'high' : (data.percent >= 35 ? 'medium' : 'low');
+
+    var bar = document.createElement('div');
+    bar.className = 'dim-bar';
+    bar.innerHTML =
+      '<div class="dim-bar-header">' +
+        '<span class="dim-bar-name">' + dim.name + getLevelTag(data.percent) + '</span>' +
+        '<span class="dim-bar-score" style="color:' +
+          (level === 'high' ? 'var(--warn)' : level === 'medium' ? 'var(--accent-light)' : 'var(--ok)') +
+          '">' + data.percent + '</span>' +
+      '</div>' +
+      '<div class="dim-bar-track">' +
+        '<div class="dim-bar-fill ' + level + '" style="width:0%"></div>' +
+      '</div>';
+    container.appendChild(bar);
+
+    (function(barEl, pct) {
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          var fill = barEl.querySelector('.dim-bar-fill');
+          fill.style.width = Math.max(pct, 3) + '%';
+        });
+      });
+    })(bar, data.percent);
+  }
+}
+
+function renderTopDim(dimScores) {
+  var entries = Object.entries(dimScores);
+  entries.sort(function(a, b) { return b[1].percent - a[1].percent; });
+  var topKey = entries[0][0];
+  var topData = entries[0][1];
+  var dim = dimensions[topKey];
+  var advice = highDimAdvice[topKey];
+
+  document.getElementById('top-dim-content').innerHTML =
+    '<div class="top-dim-badge">' +
+      '<p><span class="top-dim-label">' + dim.name + '</span> 是你得分最高的维度（' + topData.percent + ' 分）</p>' +
+      '<p style="margin-top:10px;color:var(--text-secondary);">' + advice + '</p>' +
+    '</div>';
+}
+
+function renderAdviceList(dimScores, resultType) {
+  var container = document.getElementById('advice-list');
+  container.innerHTML = '';
+  var entries = Object.entries(dimScores);
+  entries.sort(function(a, b) { return b[1].percent - a[1].percent; });
+
+  for (var i = 0; i < entries.length; i++) {
+    var key = entries[i][0];
+    var data = entries[i][1];
+    if (data.percent >= 45) {
+      var dim = dimensions[key];
+      var item = document.createElement('div');
+      item.className = 'advice-item';
+      item.innerHTML =
+        '<div class="advice-dim">' + dim.name + '（' + data.percent + ' 分）</div>' +
+        '<div class="advice-text">' + highDimAdvice[key] + '</div>';
+      container.appendChild(item);
+    }
+  }
+
+  var overall = document.createElement('div');
+  overall.className = 'advice-item';
+  overall.style.borderColor = 'rgba(224,184,112,0.25)';
+  overall.innerHTML =
+    '<div class="advice-dim" style="color:var(--amber);">整体建议</div>' +
+    '<div class="advice-text">' + resultType.advice + '</div>';
+  container.appendChild(overall);
+}
+
+// ==================== COPY ====================
+
+function copyResults() {
+  var results = calculateResults(answers);
+  var dimScores = results.dimScores;
+  var totalPercent = results.totalPercent;
+  var resultType = getResultType(totalPercent);
+
+  var text = '性压抑心理倾向自我觉察测试结果\n';
+  text += '════════════════════════\n';
+  text += '总分：' + totalPercent + '/100 — ' + resultType.type + '\n';
+  text += resultType.desc + '\n\n';
+  text += '六维度分数：\n';
+  var entries = Object.entries(dimScores);
+  entries.sort(function(a, b) { return b[1].percent - a[1].percent; });
+  for (var i = 0; i < entries.length; i++) {
+    text += '  · ' + dimensions[entries[i][0]].name + '：' + entries[i][1].percent + '/100\n';
+  }
+  text += '\n' + resultType.advice + '\n';
+  text += '\n⚠️ 本测试仅供自我觉察参考，非临床诊断。如有困扰请寻求专业帮助。';
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function() {
+      showToast('已复制到剪贴板');
+    }).catch(function() {
+      fallbackCopy(text);
+    });
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try {
+    document.execCommand('copy');
+    showToast('已复制到剪贴板');
+  } catch(e) {
+    alert('复制失败，请手动选择文字复制。\n\n' + text);
+  }
+  document.body.removeChild(ta);
+}
+
+// ==================== RESET ====================
+
+function resetTest() {
+  if (Object.keys(answers).length > 0) {
+    if (!confirm('确定要重新测试吗？当前答案将被清除。')) return;
+  }
+  clearAnswers();
+  currentQuestion = 0;
+  switchView('welcome');
+  updateStartButton();
+}
+
+// ==================== RESUME ====================
+
+function updateStartButton() {
+  var btnStart = document.getElementById('btn-start');
+  var resumeHint = document.getElementById('resume-hint');
+  var answeredCount = Object.keys(answers).length;
+  if (answeredCount > 0 && answeredCount < questions.length) {
+    btnStart.textContent = '继续测试';
+    resumeHint.style.display = '';
+    resumeHint.textContent = '你已有 ' + answeredCount + '/24 题的答题记录，点击继续';
+  } else if (answeredCount === questions.length) {
+    btnStart.textContent = '查看上次结果';
+    resumeHint.style.display = '';
+    resumeHint.textContent = '你已完成全部 24 题，点击查看结果；如需重测请进入结果页操作';
+  } else {
+    btnStart.textContent = '开始测试';
+    resumeHint.style.display = 'none';
+  }
+}
+
+// ==================== INIT ====================
+
+function init() {
+  loadAnswers();
+
+  document.getElementById('btn-start').addEventListener('click', function() {
+    if (Object.keys(answers).length === questions.length) {
+      showResults();
+      return;
+    }
+    switchView('quiz');
+    renderQuestion();
+  });
+
+  document.getElementById('btn-next').addEventListener('click', goNext);
+  document.getElementById('btn-prev').addEventListener('click', goPrev);
+  document.getElementById('btn-retry').addEventListener('click', resetTest);
+  document.getElementById('btn-copy').addEventListener('click', copyResults);
+
+  // Keyboard navigation
+  document.addEventListener('keydown', function(e) {
+    if (currentView !== 'quiz') return;
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      var btnNext = document.getElementById('btn-next');
+      if (!btnNext.disabled) goNext();
+    }
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      goPrev();
+    }
+    if (e.key >= '1' && e.key <= '5') {
+      e.preventDefault();
+      selectAnswer(questions[currentQuestion].id, parseInt(e.key, 10));
+    }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      var nextBtn = document.getElementById('btn-next');
+      if (!nextBtn.disabled) goNext();
+    }
+  });
+
+  updateStartButton();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>
